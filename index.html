@@ -402,9 +402,9 @@ function fmtLiter(ml){
 
 async function loadSettings(){
   try{
-    const res = await window.storage.get(STORAGE_SETTINGS_KEY, false);
-    if(res && res.value){
-      settings = { ...DEFAULT_SETTINGS, ...JSON.parse(res.value) };
+    const raw = localStorage.getItem(STORAGE_SETTINGS_KEY);
+    if(raw){
+      settings = { ...DEFAULT_SETTINGS, ...JSON.parse(raw) };
     }
   }catch(e){
     settings = { ...DEFAULT_SETTINGS };
@@ -413,14 +413,14 @@ async function loadSettings(){
 
 async function saveSettings(){
   try{
-    await window.storage.set(STORAGE_SETTINGS_KEY, JSON.stringify(settings), false);
+    localStorage.setItem(STORAGE_SETTINGS_KEY, JSON.stringify(settings));
   }catch(e){ console.error('settings save failed', e); }
 }
 
 async function loadDay(d){
   try{
-    const res = await window.storage.get(dayEntryKey(d), false);
-    if(res && res.value) return JSON.parse(res.value);
+    const raw = localStorage.getItem(dayEntryKey(d));
+    if(raw) return JSON.parse(raw);
     return { entries: [] };
   }catch(e){
     return { entries: [] };
@@ -429,7 +429,7 @@ async function loadDay(d){
 
 async function saveDay(d, data){
   try{
-    await window.storage.set(dayEntryKey(d), JSON.stringify(data), false);
+    localStorage.setItem(dayEntryKey(d), JSON.stringify(data));
   }catch(e){ console.error('day save failed', e); }
 }
 
