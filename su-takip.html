@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Su Molası</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #F2FAFA;
+    --surface: #FFFFFF;
+    --ink: #0C2B33;
+    --ink-soft: #4C6D74;
+    --teal: #0E7C86;
+    --teal-deep: #0A5C63;
+    --teal-pale: #DDF0F1;
+    --coral: #FF8A5B;
+    --line: #CFE6E8;
+    --wave: #BFE3E6;
+  }
+  *{ box-sizing: border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Manrope', sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  .app{
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 28px 20px 60px;
+    position: relative;
+  }
+
+  /* header */
+  .topbar{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    margin-bottom: 22px;
+  }
+  .greeting{ line-height:1.15; }
+  .greeting .hello{
+    font-family:'Fraunces', serif;
+    font-size: 26px;
+    font-weight: 500;
+    color: var(--teal-deep);
+    display:block;
+  }
+  .greeting .sub{
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    margin-top: 4px;
+    display:block;
+  }
+  .gear-btn{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    width: 40px; height:40px;
+    border-radius: 12px;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    flex-shrink:0;
+    transition: border-color .15s ease, transform .1s ease;
+  }
+  .gear-btn:hover{ border-color: var(--teal); }
+  .gear-btn:active{ transform: scale(0.94); }
+  .gear-btn svg{ width:19px; height:19px; stroke: var(--ink-soft); }
+
+  /* hero card */
+  .hero{
+    background: var(--surface);
+    border-radius: 26px;
+    padding: 26px 22px 22px;
+    border: 1px solid var(--line);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-top{
+    display:flex;
+    gap: 20px;
+    align-items:center;
+  }
+  .bottle-wrap{
+    width: 84px;
+    flex-shrink:0;
+  }
+  .stat-block{ flex:1; min-width:0; }
+  .stat-number{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size: 42px;
+    color: var(--teal-deep);
+    line-height: 1;
+    letter-spacing: -0.5px;
+  }
+  .stat-number small{
+    font-size: 19px;
+    font-weight: 400;
+    color: var(--ink-soft);
+    margin-left: 3px;
+  }
+  .stat-goal{
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    margin-top: 6px;
+  }
+  .stat-goal button{
+    background:none;border:none;padding:0;
+    color: var(--teal);
+    font-weight:600;
+    font-size: 13.5px;
+    text-decoration: underline;
+    text-decoration-color: var(--wave);
+    text-underline-offset: 2px;
+    cursor:pointer;
+  }
+  .progress-track{
+    margin-top: 14px;
+    height: 8px;
+    background: var(--teal-pale);
+    border-radius: 6px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    background: var(--teal);
+    border-radius: 6px;
+    transition: width .5s cubic-bezier(.4,0,.2,1);
+  }
+  .empty-note{
+    margin-top: 16px;
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    background: var(--teal-pale);
+    padding: 10px 13px;
+    border-radius: 12px;
+  }
+  .goal-hit{
+    margin-top: 16px;
+    font-size: 13.5px;
+    color: var(--teal-deep);
+    background: #FFF1E8;
+    padding: 10px 13px;
+    border-radius: 12px;
+    border: 1px solid #FFDCC4;
+  }
+
+  /* quick add */
+  .quick-add{
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-top: 20px;
+  }
+  .qbtn{
+    background: var(--teal);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    padding: 12px 6px;
+    font-family:'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    cursor:pointer;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap: 3px;
+    transition: transform .1s ease, background .15s ease;
+  }
+  .qbtn .qsub{ font-weight:500; font-size:11px; opacity:.85; }
+  .qbtn.secondary{
+    background: var(--surface);
+    color: var(--teal-deep);
+    border: 1.5px solid var(--teal);
+  }
+  .qbtn:active{ transform: scale(0.96); }
+  .row-actions{
+    display:flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .link-btn{
+    background:none;
+    border:none;
+    color: var(--ink-soft);
+    font-size: 13px;
+    font-weight:600;
+    cursor:pointer;
+    padding: 6px 2px;
+    text-decoration: underline;
+    text-decoration-color: var(--line);
+    text-underline-offset: 2px;
+  }
+  .link-btn:hover{ color: var(--teal-deep); }
+
+  /* custom amount */
+  .custom-row{
+    display:none;
+    margin-top: 12px;
+    gap: 8px;
+  }
+  .custom-row.open{ display:flex; }
+  .custom-row input{
+    flex:1;
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-family:'Manrope', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    outline: none;
+  }
+  .custom-row input:focus{ border-color: var(--teal); }
+  .custom-row button{
+    background: var(--teal-deep);
+    color: white;
+    border:none;
+    border-radius: 12px;
+    padding: 0 16px;
+    font-weight:700;
+    font-size: 13.5px;
+    cursor:pointer;
+  }
+
+  /* streak */
+  .streak{
+    margin-top: 18px;
+    display:flex;
+    align-items:center;
+    gap: 8px;
+    font-size: 13.5px;
+    color: var(--ink-soft);
+  }
+  .streak b{ color: var(--teal-deep); }
+
+  /* week section */
+  .week-card{
+    background: var(--surface);
+    border-radius: 26px;
+    padding: 22px 20px 18px;
+    border: 1px solid var(--line);
+    margin-top: 16px;
+  }
+  .week-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom: 18px;
+  }
+  .week-title{
+    font-family:'Fraunces', serif;
+    font-size: 19px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .week-avg{ font-size:12.5px; color: var(--ink-soft); }
+  .week-chart{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    height: 130px;
+    position:relative;
+    padding-top: 4px;
+  }
+  .goal-line{
+    position:absolute;
+    left:0; right:0;
+    border-top: 1.5px dashed #A9CDD1;
+  }
+  .day-col{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap: 8px;
+    width: 12%;
+    z-index:1;
+  }
+  .bar-wrap{
+    height: 100px;
+    width: 100%;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+  }
+  .bar{
+    width: 62%;
+    border-radius: 7px 7px 3px 3px;
+    background: var(--wave);
+    transition: height .5s ease;
+    min-height: 3px;
+  }
+  .bar.hit{ background: var(--teal); }
+  .bar.today{ background: var(--coral); }
+  .day-label{
+    font-size: 11px;
+    color: var(--ink-soft);
+    font-weight: 600;
+  }
+  .day-label.today{ color: var(--coral); }
+
+  /* settings modal */
+  .overlay{
+    position: fixed; inset:0;
+    background: rgba(12,43,51,0.45);
+    display:none;
+    align-items:flex-end;
+    justify-content:center;
+    z-index: 50;
+  }
+  .overlay.open{ display:flex; }
+  .sheet{
+    background: var(--surface);
+    width:100%;
+    max-width: 480px;
+    border-radius: 26px 26px 0 0;
+    padding: 24px 22px 30px;
+    animation: slideUp .25s ease;
+  }
+  @keyframes slideUp{ from{ transform: translateY(24px); opacity:0;} to{ transform:none; opacity:1;} }
+  .sheet h3{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size: 20px;
+    margin: 0 0 18px;
+    color: var(--ink);
+  }
+  .field{ margin-bottom: 14px; }
+  .field label{
+    display:block;
+    font-size: 12.5px;
+    font-weight:700;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+  }
+  .field input{
+    width:100%;
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    padding: 11px 13px;
+    font-family:'Manrope', sans-serif;
+    font-size: 14.5px;
+    color: var(--ink);
+    outline:none;
+  }
+  .field input:focus{ border-color: var(--teal); }
+  .field .hint{ font-size:11.5px; color: var(--ink-soft); margin-top:5px; }
+  .sheet-actions{
+    display:flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  .sheet-actions button{
+    flex:1;
+    border:none;
+    border-radius: 14px;
+    padding: 13px;
+    font-weight:700;
+    font-size: 14.5px;
+    cursor:pointer;
+  }
+  .btn-cancel{ background: var(--teal-pale); color: var(--teal-deep); }
+  .btn-save{ background: var(--teal); color:white; }
+
+  .loading{
+    text-align:center;
+    padding: 60px 0;
+    color: var(--ink-soft);
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="loading">Su Molası açılıyor…</div>
+</div>
+
+<script>
+const STORAGE_SETTINGS_KEY = 'water:settings';
+const DEFAULT_SETTINGS = { name: '', bottleMl: 890, glassMl: 200, goalMl: 1780 };
+
+let settings = { ...DEFAULT_SETTINGS };
+let todayData = { entries: [] };
+let weekData = [];
+
+const app = document.getElementById('app');
+
+function pad(n){ return n < 10 ? '0'+n : ''+n; }
+function dateKey(d){ return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; }
+function dayEntryKey(d){ return `water:day:${dateKey(d)}`; }
+function fmtL(ml){
+  const l = ml / 1000;
+  return (Number.isInteger(l*10) ? l.toFixed(1) : l.toFixed(2)).replace(/\.00$/,'').replace(/0$/,'').replace(/\.$/,'');
+}
+function fmtLiter(ml){
+  return (Math.round(ml/10)/100).toString().replace('.', ',');
+}
+
+async function loadSettings(){
+  try{
+    const res = await window.storage.get(STORAGE_SETTINGS_KEY, false);
+    if(res && res.value){
+      settings = { ...DEFAULT_SETTINGS, ...JSON.parse(res.value) };
+    }
+  }catch(e){
+    settings = { ...DEFAULT_SETTINGS };
+  }
+}
+
+async function saveSettings(){
+  try{
+    await window.storage.set(STORAGE_SETTINGS_KEY, JSON.stringify(settings), false);
+  }catch(e){ console.error('settings save failed', e); }
+}
+
+async function loadDay(d){
+  try{
+    const res = await window.storage.get(dayEntryKey(d), false);
+    if(res && res.value) return JSON.parse(res.value);
+    return { entries: [] };
+  }catch(e){
+    return { entries: [] };
+  }
+}
+
+async function saveDay(d, data){
+  try{
+    await window.storage.set(dayEntryKey(d), JSON.stringify(data), false);
+  }catch(e){ console.error('day save failed', e); }
+}
+
+function totalOf(dayObj){
+  return dayObj.entries.reduce((s,e) => s + e.ml, 0);
+}
+
+async function loadWeek(){
+  const days = [];
+  const today = new Date();
+  for(let i=6;i>=0;i--){
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const data = await loadDay(d);
+    days.push({ date: d, total: totalOf(data), isToday: i===0 });
+  }
+  weekData = days;
+}
+
+async function addWater(ml){
+  const today = new Date();
+  todayData.entries.push({ ml, time: Date.now() });
+  await saveDay(today, todayData);
+  await loadWeek();
+  render();
+}
+
+async function undoLast(){
+  if(todayData.entries.length === 0) return;
+  todayData.entries.pop();
+  const today = new Date();
+  await saveDay(today, todayData);
+  await loadWeek();
+  render();
+}
+
+function computeStreak(){
+  let streak = 0;
+  for(let i = weekData.length - 1; i >= 0; i--){
+    const day = weekData[i];
+    if(day.isToday){
+      if(day.total >= settings.goalMl) streak++;
+      else continue;
+    } else if(day.total >= settings.goalMl){
+      streak++;
+    } else {
+      break;
+    }
+  }
+  return streak;
+}
+
+const DAY_LABELS = ['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
+
+function bottleSVG(pct){
+  const p = Math.max(0, Math.min(1, pct));
+  const fillY = 78 - (p * 62);
+  return `
+  <svg viewBox="0 0 84 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <clipPath id="bottleClip">
+        <path d="M28 6 h28 v10 c0 4 6 6 6 14 v72 c0 6 -5 10 -11 10 H33 c-6 0-11-4-11-10 V30 c0-8 6-10 6-14 V6z"/>
+      </clipPath>
+    </defs>
+    <path d="M28 6 h28 v10 c0 4 6 6 6 14 v72 c0 6 -5 10 -11 10 H33 c-6 0-11-4-11-10 V30 c0-8 6-10 6-14 V6z"
+      fill="var(--teal-pale)" stroke="var(--line)" stroke-width="1.5"/>
+    <g clip-path="url(#bottleClip)">
+      <rect x="14" y="${fillY}" width="56" height="80" fill="var(--teal)"/>
+      <path d="M14 ${fillY} q7 -4 14 0 t14 0 t14 0 t14 0 V${fillY+80} H14z" fill="var(--teal)"/>
+    </g>
+    <rect x="33" y="2" width="18" height="8" rx="2" fill="var(--teal-deep)"/>
+  </svg>`;
+}
+
+function render(){
+  const total = totalOf(todayData);
+  const pct = settings.goalMl > 0 ? total / settings.goalMl : 0;
+  const goalHit = total >= settings.goalMl && settings.goalMl > 0;
+  const halfBottle = Math.round(settings.bottleMl / 2);
+  const name = settings.name ? settings.name : 'canım';
+  const streak = computeStreak();
+  const weekTotal = weekData.reduce((s,d) => s + d.total, 0);
+  const weekAvgL = weekData.length ? fmtLiter(weekTotal / weekData.length) : '0';
+  const maxForChart = Math.max(settings.goalMl, ...weekData.map(d => d.total), 1);
+
+  app.innerHTML = `
+    <div class="topbar">
+      <div class="greeting">
+        <span class="hello">Merhaba, ${escapeHtml(name)}</span>
+        <span class="sub">${goalHit ? 'Bugünkü hedefine ulaştın, harikasın 🌊' : 'Şişeni doldurmayı unutma'}</span>
+      </div>
+      <button class="gear-btn" id="openSettings" aria-label="Ayarlar">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.63.24 1.1.79 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div class="hero">
+      <div class="hero-top">
+        <div class="bottle-wrap">${bottleSVG(pct)}</div>
+        <div class="stat-block">
+          <div class="stat-number">${fmtLiter(total)}<small>L</small></div>
+          <div class="stat-goal">
+            hedef ${fmtLiter(settings.goalMl)} L ·
+            <button id="editGoalInline">değiştir</button>
+          </div>
+          <div class="progress-track"><div class="progress-fill" style="width:${Math.min(100, pct*100)}%"></div></div>
+        </div>
+      </div>
+
+      ${total === 0
+        ? `<div class="empty-note">Bugün henüz su içmedin, ilk yudumu ekle 💧</div>`
+        : goalHit
+          ? `<div class="goal-hit">Bugünkü hedefini tamamladın! Fazladan içtiğin her yudum bonus 🎉</div>`
+          : ''
+      }
+
+      <div class="quick-add">
+        <button class="qbtn" id="addBottle">
+          1 Stanley
+          <span class="qsub">${settings.bottleMl} ml</span>
+        </button>
+        <button class="qbtn secondary" id="addHalf">
+          Yarım Stanley
+          <span class="qsub">${halfBottle} ml</span>
+        </button>
+        <button class="qbtn secondary" id="addGlass">
+          1 Bardak
+          <span class="qsub">${settings.glassMl} ml</span>
+        </button>
+      </div>
+      <div class="row-actions">
+        <button class="link-btn" id="toggleCustom">özel miktar ekle</button>
+        <button class="link-btn" id="undoBtn" ${todayData.entries.length === 0 ? 'disabled style="opacity:.4;cursor:default;"' : ''}>son eklemeyi geri al</button>
+      </div>
+      <div class="custom-row" id="customRow">
+        <input type="number" id="customInput" placeholder="ml cinsinden, örn. 250" min="1">
+        <button id="customAdd">Ekle</button>
+      </div>
+
+      <div class="streak">💧 <span><b>${streak}</b> gündür hedefi tutturuyorsun</span></div>
+    </div>
+
+    <div class="week-card">
+      <div class="week-head">
+        <span class="week-title">Bu hafta</span>
+        <span class="week-avg">günlük ort. ${weekAvgL} L</span>
+      </div>
+      <div class="week-chart">
+        <div class="goal-line" style="bottom:${Math.min(100, (settings.goalMl/maxForChart)*100)}px"></div>
+        ${weekData.map(d => {
+          const h = Math.max(3, (d.total / maxForChart) * 100);
+          const hit = d.total >= settings.goalMl;
+          const label = DAY_LABELS[(d.date.getDay()+6)%7];
+          return `
+          <div class="day-col">
+            <div class="bar-wrap"><div class="bar ${d.isToday ? 'today' : (hit ? 'hit' : '')}" style="height:${h}px"></div></div>
+            <div class="day-label ${d.isToday ? 'today' : ''}">${label}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <div class="overlay" id="settingsOverlay">
+      <div class="sheet">
+        <h3>Ayarlar</h3>
+        <div class="field">
+          <label for="nameInput">İsim</label>
+          <input type="text" id="nameInput" placeholder="örn. Ayşe" value="${escapeHtml(settings.name)}">
+        </div>
+        <div class="field">
+          <label for="bottleInput">Stanley şişe boyu (ml)</label>
+          <input type="number" id="bottleInput" value="${settings.bottleMl}" min="50">
+          <div class="hint">0.89 L'lik Stanley için 890 ml.</div>
+        </div>
+        <div class="field">
+          <label for="glassInput">Bardak ölçüsü (ml)</label>
+          <input type="number" id="glassInput" value="${settings.glassMl}" min="20">
+          <div class="hint">Standart su bardağı için 200 ml.</div>
+        </div>
+        <div class="field">
+          <label for="goalInput">Günlük hedef (ml)</label>
+          <input type="number" id="goalInput" value="${settings.goalMl}" min="100">
+          <div class="hint">2 Stanley şişesi için 1780 ml.</div>
+        </div>
+        <div class="sheet-actions">
+          <button class="btn-cancel" id="cancelSettings">Vazgeç</button>
+          <button class="btn-save" id="saveSettingsBtn">Kaydet</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('addBottle').onclick = () => addWater(settings.bottleMl);
+  document.getElementById('addHalf').onclick = () => addWater(halfBottle);
+  document.getElementById('addGlass').onclick = () => addWater(settings.glassMl);
+  document.getElementById('undoBtn').onclick = () => undoLast();
+  document.getElementById('openSettings').onclick = () => openSettings();
+  document.getElementById('editGoalInline').onclick = () => openSettings();
+  document.getElementById('toggleCustom').onclick = () => {
+    document.getElementById('customRow').classList.toggle('open');
+    document.getElementById('customInput').focus();
+  };
+  document.getElementById('customAdd').onclick = () => {
+    const val = parseInt(document.getElementById('customInput').value, 10);
+    if(val && val > 0){
+      addWater(val);
+    }
+  };
+  document.getElementById('customInput').onkeydown = (e) => {
+    if(e.key === 'Enter') document.getElementById('customAdd').click();
+  };
+
+  const overlay = document.getElementById('settingsOverlay');
+  document.getElementById('cancelSettings').onclick = () => overlay.classList.remove('open');
+  overlay.onclick = (e) => { if(e.target === overlay) overlay.classList.remove('open'); };
+  document.getElementById('saveSettingsBtn').onclick = async () => {
+    const name = document.getElementById('nameInput').value.trim();
+    const bottleMl = parseInt(document.getElementById('bottleInput').value, 10) || DEFAULT_SETTINGS.bottleMl;
+    const glassMl = parseInt(document.getElementById('glassInput').value, 10) || DEFAULT_SETTINGS.glassMl;
+    const goalMl = parseInt(document.getElementById('goalInput').value, 10) || DEFAULT_SETTINGS.goalMl;
+    settings = { name, bottleMl, glassMl, goalMl };
+    await saveSettings();
+    overlay.classList.remove('open');
+    render();
+  };
+}
+
+function openSettings(){
+  document.getElementById('settingsOverlay').classList.add('open');
+}
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+async function init(){
+  await loadSettings();
+  todayData = await loadDay(new Date());
+  await loadWeek();
+  render();
+}
+
+init();
+</script>
+</body>
+</html>
